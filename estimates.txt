@@ -1,0 +1,36 @@
+## Minimum RTO for a single AZ outage
+
+In the event of a single Availability Zone (AZ) outage, the minimum achievable RTO can be relatively low, often measured in minutes or even seconds.
+
+| Time  | Description                                                |
+| ----- | ---------------------------------------------------------- |
+| 00:01 | Problem happens (First minute)                             |
+| 00:06 | An amount of time passes before an alert triggers (5 mins) |
+| 00:07 | Automatically switch to second availability zone (1 mins)  |
+
+**Total time ±10 mins**
+
+## Minimum RTO for a single region outage
+
+When dealing with a single-region outage, the minimum RTO tends to be longer compared to an AZ outage. This is because failing over to another region typically involves more complex processes, such as DNS redirection and cross-region data synchronization.
+
+| Time  | Description                                                                                 |
+| ----- | ------------------------------------------------------------------------------------------- |
+| 00:01 | Problem happens (First minute)                                                              |
+| 00:06 | An amount of time passes before an alert triggers (5 mins)                                  |
+| 00:07 | Alert triggers on-all staff (1 mins)                                                        |
+| 00:17 | On-call staff may need to get out of bed, get to a computer, log in, log onto VPN (10 mins) |
+| 00:27 | On-call staff starts diagnosing the issue (10 mins)                                         |
+| 00:37 | Root cause is discovered (10 mins)                                                          |
+| 00:47 | Remediation started (10 mins)                                                               |
+| 00:52 | Remediation completed/Issue fixed (5 mins)                                                                        |
+
+**Total time ±60 mins**
+
+## Minimum RPO for a single AZ outage
+
+RDS has a built-in timed recovery feature to upload transactions every 5 minutes. So, in this case the maximum data loss will be 5 minutes.
+
+## Minimum RPO for a single region outage
+
+Read replicas in a database system are typically used to offload read traffic from the primary database and can serve as a form of data redundancy. The idea is to keep read replicas as up-to-date as possible to minimize data loss in case of a failure. So the read replica should have almost the same RPO as the primary DB. For some critical cases we can consider at most the RPO should be ±10 mins.
